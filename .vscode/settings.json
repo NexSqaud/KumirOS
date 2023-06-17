@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "stddef.h": "c",
+        "stdlib_c.h": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "list": "c",
+        "type_traits": "c",
+        "vector": "c",
+        "xhash": "c",
+        "xstring": "c",
+        "xutility": "c",
+        "chrono": "c",
+        "algorithm": "c",
+        "functional": "c",
+        "xtr1common": "c"
+    }
+}

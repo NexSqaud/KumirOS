@@ -1,0 +1,9 @@
+build/**
+build/
+
+bochs.log
+debug.log
+debug.img
+dump.dmp
+
+release.img

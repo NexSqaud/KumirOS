@@ -1,0 +1,3 @@
+[submodule "nobuild"]
+    path = nobuild
+    url = https://github.com/tsoding/nobuild
