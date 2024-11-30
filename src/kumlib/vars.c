@@ -166,6 +166,7 @@ EXTERN __kumir_variant __kumir_copy_variant(const __kumir_variant rvalue, __kumi
         }
         break;
     default:
+		__kumir_abort_on_error("Unknown scalar type");
         break;
     }
     return result;

@@ -13,7 +13,7 @@ gdt_table:
     .short 0xFFFF
     .short 0x0
     .byte 0x0
-    .byte 0b10011110
+    .byte 0b10011010
     #       PPLSECRA
     .byte (0b1100) << 4 | 0b1111
     #        GSLR          Limit

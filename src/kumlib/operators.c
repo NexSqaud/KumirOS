@@ -3,6 +3,10 @@
 #include <debug.h>
 #include <math.h>
 
+#define __kumir_check_value_defined(value) \
+	DEBUG_PRINT("Checking for value \""stringify(value)"\""); \
+	__kumir_check_value_defined(value)
+
 static signed char __kumir_compare_scalars(const __kumir_scalar* left, const __kumir_scalar* right)
 {
     signed char result = 0;

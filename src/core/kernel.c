@@ -14,20 +14,25 @@ extern int main();
 
 void __attribute__((section(".text.main"), noreturn)) _init(void)
 {
+    __asm__ volatile("xchgw %bx, %bx");
     debugInit();
     interruptsInit();
 
     interruptAddHandler(0, divisionError);
     interruptAddHandler(6, invalidOpcode);
+    interruptAddHandler(8, doubleFault);
+    interruptAddHandler(10, invalidTss);
     interruptAddHandler(11, segmentNotPresent);
     interruptAddHandler(13, generalProtectionFault);
     interruptAddHandler(14, pageFault);
 
     rtcInit();
     keyboardInit();
+    __asm__ volatile("xchgw %bx, %bx");
     vgaInit(video_buffer);
 
-    __asm__("finit");
+    __asm__ volatile("xchgw %bx, %bx");
+    __asm__ volatile("finit");
 
     DEBUG_PRINT("Kernel initialized!");
 

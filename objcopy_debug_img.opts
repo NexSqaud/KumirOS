@@ -1,0 +1,8 @@
+-v -O binary -x -X -S -g --gap-fill 0x00
+--keep-section .bootloader_text --change-section-lma .bootloader_text-0x7C00
+--keep-section .bootloader_data --change-section-lma .bootloader_data-0x7C00
+--keep-section .sig --change-section-lma .sig-0x7C00
+--keep-section .core_text --change-section-lma .core_text-0xFFE00
+--keep-section .core_data --change-section-lma .core_data-0xFFE00
+--keep-section .align --change-section-lma .align-0xFFE00
+build/debug/kumiros.elf build/debug/kumiros.bin

@@ -3,13 +3,13 @@ plugin_ctrl: voodoo=false, unmapped=true, biosdev=true, speaker=true, extfpuirq=
 config_interface: win32config
 display_library: win32
 memory: host=32, guest=32
-romimage: file="C:\Program Files\Bochs-2.7\BIOS-bochs-latest", address=0x00000000, options=none
-vgaromimage: file="C:\Program Files\Bochs-2.7\VGABIOS-lgpl-latest"
+romimage: file="C:\Program Files\Bochs-2.8\BIOS-bochs-latest", address=0x00000000, options=none
+vgaromimage: file="C:\Program Files\Bochs-2.8\VGABIOS-lgpl-latest"
 boot: c 
 # no floppya
 # no floppyb
 ata0: enabled=true, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
-ata0-master: type=disk, path="debug.img", mode=flat, cylinders=0, heads=0, spt=0, model="Generic HDD", biosdetect=auto, translation=auto
+ata0-master: type=disk, path=".\debug.img", mode=flat, cylinders=0, heads=0, spt=0, model="Generic HDD", biosdetect=auto, translation=auto
 ata0-slave: type=none
 ata1: enabled=true, ioaddr1=0x170, ioaddr2=0x370, irq=15
 ata1-master: type=none
@@ -34,7 +34,7 @@ cpuid: 1g_pages=false, pcid=false, fsgsbase=false, smep=false, smap=false, mwait
 cpuid: vmx=1
 print_timestamps: enabled=0
 debugger_log: -
-magic_break: enabled=0
+magic_break: enabled=1
 # no gdb stub
 port_e9_hack: enabled=0
 private_colormap: enabled=0

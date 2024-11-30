@@ -7,17 +7,19 @@
 
 #define IMG_SIZE 512 * 1008
 
-#define C_COMMON_FLAGS "-m32", "-Wall", "-Wextra", "-Iinclude", "-nostdlib", "-nostdinc", "-ffreestanding", "-fno-builtin", "-march=i386", "-no-pie", "-fno-pic", "--std=c11", "-Werror=implicit-function-declaration"
+#define C_COMMON_FLAGS "--target=i686-unknown-elf", "-O1", "-Wall", "-Wextra", "-Iinclude", "-nostdlib", "-nostdinc", "-ffreestanding", "-fno-builtin", "-fno-pic", "--std=c11", "-Werror=implicit-function-declaration", "-flto"
 #define C_RELEASE_FLAGS "-O2", "-pedantic"
 #define C_DEBUG_FLAGS "-ggdb"
 
-#define ASM_COMMON_FLAGS "-march=i386", "--32"
+#define ASM_COMMON_FLAGS "-c", "--target=i686-unknown-elf"
 
-#define LD_FLAGS "-nostdlib", "-no-pie", "-melf_i386", "--print-map" 
+#define LD_FLAGS "-fuse-ld=lld-14", "-nostdlib", "-flto", "-no-pie", "-fno-pic", "-v", "-Wl,--oformat=elf", "-m32", "-Wl,-M"
+//, "--target=i386-unknown-elf"
+//, "--target=i686-unknown-elf"
 
-#define CC "i686-elf-gcc"
-#define ASM "as"
-#define LD "i686-elf-ld"
+#define CC "clang-14"
+#define ASM "clang-14"
+#define LD "clang-14"
 
 #define CSTR_ARRAY_APPEND(array, element) array = cstr_array_append(array, element);
 
@@ -45,7 +47,7 @@ void compileAsm(const char* filename, const char* outputFile)
 
     if (currentBuildType == Release)
     {
-        CMD(ASM, ASM_COMMON_FLAGS, "-c", filename, "-o", outputPath);
+        CMD(ASM, ASM_COMMON_FLAGS, filename, "-o", outputPath);
     }
     else if (currentBuildType == Debug)
     {
@@ -160,9 +162,9 @@ void compileKumir(void)
 
 void linkCore(void)
 {
-    const char* outputFile = PATH(buildFolder, "kumiros.bin");
+    const char* outputFile = PATH(buildFolder, "kumiros.elf");
 
-    Cstr_Array line = cstr_array_make(LD, LD_FLAGS, "-Tlinker.ld", NULL);
+    Cstr_Array line = cstr_array_make(LD, LD_FLAGS, "-Tlinker-elf.ld", NULL);
 
     const char* linkPath = getenv("LIBGCC_PATH");
     const char* linkParameter = CONCAT("-L", linkPath);
@@ -183,8 +185,8 @@ void linkCore(void)
 
     CSTR_ARRAY_APPEND(line, "-o");
     CSTR_ARRAY_APPEND(line, outputFile);
-    CSTR_ARRAY_APPEND(line, linkParameter);
-    CSTR_ARRAY_APPEND(line, "-lgcc");
+    //CSTR_ARRAY_APPEND(line, linkParameter);
+    //CSTR_ARRAY_APPEND(line, "-lgcc");
 
     Cmd cmd = {
         .line = line
@@ -201,36 +203,47 @@ void linkCore(void)
 
 void makeImg(void)
 {
-    INFO("Copying linked core to image");
+	// TODO: objcopy
+	if (currentBuildType == Debug)
+	{
+		CMD("objcopy", "@./objcopy_debug_img.opts");
+		CMD("objcopy", "@./objcopy_debug_sym.opts");
+	}
+	else
+	{
+		CMD("objcopy", "@./objcopy_release_img.opts");
+	}
 
+    INFO("Copying linked core to image");
+	
     const char* buildTypeString = "debug";
     if (currentBuildType == Release) buildTypeString = "release";
-
+	
     const char* outputFile = CONCAT(buildTypeString, ".img");
-
+	
     FILE* image = fopen(outputFile, "wb");
     if (!image)
     {
         PANIC("Can't create image file");
     }
-
+	
     {
         const char* corePath = PATH(buildFolder, "kumiros.bin");
         FILE* coreFile = fopen(corePath, "rb");
-
+	
         struct stat st;
         fstat(fileno(coreFile), &st);
-
+	
         uint8_t* buffer = malloc(IMG_SIZE);
         fread(buffer, sizeof(uint8_t), st.st_size, coreFile);
         fwrite(buffer, sizeof(uint8_t), IMG_SIZE, image);
-
+	
         fclose(coreFile);
         free(corePath);
     }
-
+	
     INFO("Successfuly written image to %s", outputFile);
-
+	
     fclose(image);
     free(outputFile);
 }

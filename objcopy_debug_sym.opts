@@ -1,0 +1,2 @@
+-v --only-keep-debug
+build/debug/kumiros.elf build/debug/kumiros.dbg

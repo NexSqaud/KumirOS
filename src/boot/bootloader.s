@@ -15,6 +15,8 @@
 
 .extern set_video_mode
 
+.extern _init
+
 .section .data
     .globl video_buffer
     video_buffer: .int 0x0
@@ -74,7 +76,7 @@ _test_passed:
     
     lgdt gdt_ptr
     movl %cr0, %eax
-    or $1, %eax
+    or $1, %al
     movl %eax, %cr0
     
     jmp $0x8,$second_part
@@ -88,15 +90,14 @@ second_part:
     movw %ax, %fs
     movw %ax, %ss
     
-    movl $0x7FFFF, %eax
-    movl %eax, %esp
-    movl %eax, %ebp
-    
-    movl $_core_size_int, %ecx
+	movl $_core_size_int, %ecx
     movl $_core_begin, %edi
     movl $_temp_core_location_segment*0x10+_temp_core_location_offset, %esi
     
     rep movsd
-    
-    push video_buffer
-    jmp _core_begin
+	
+    movl $0x7FFFF, %eax
+    movl %eax, %esp
+    movl %eax, %ebp
+
+    jmp _init

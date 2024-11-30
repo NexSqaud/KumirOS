@@ -334,7 +334,7 @@ void vgaClearBuffer(Color color)
     }
 }
 
-void vgaInit(uint32_t frontBufferAddress)
+__attribute__((noinline)) void vgaInit(uint32_t frontBufferAddress)
 {
     DEBUG_PRINTF("Front buffer address: %x", frontBufferAddress);
 

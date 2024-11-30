@@ -1,50 +1,50 @@
-OUTPUT_FORMAT("binary");
+/*OUTPUT_FORMAT("binary");*/
 ENTRY(_start);
+
 SECTIONS
 {
-    _core_begin = 0x00100000;
-    
-    . = 0x0;
-    .bootloader 0x7C00 : AT(0x0)
+	. = 0x7C00;
+	
+    .bootloader_text : AT(0x7C00)
     {
         *bootloader.s.o(.text);
         *.s.o(.text);
     }
     
-    _bootloader_last_opcode = (. + 0x7C00 - 0x2); 
-    
-    .bootloader_data : 
+    .bootloader_data : AT(ADDR(.bootloader_text) + SIZEOF(.bootloader_text))
     {
         *bootloader.s.o(.data);
         *.s.o(.data);
-    }
-    
-    .sig : AT(0x1FE)
+    } 
+	
+    .sig 0x7DFE : AT(0x1FE)
     {
         SHORT(0xAA55);
-    }
+    } 
+	
+	bootloader_end = .;
 
-    . = 0x0200;
-    .text _core_begin : AT(0x0200)
+	. = 0x7E00;
+
+    .core_text :
     {
         _text = .;
-        *(.text.main);
-        *(.text);
+        *(.text*);
         _text_end = .;
     }
-    
-    .data :
+	
+    .core_data :
     {
         _data = .;
-        *(.bss);
-        *(.bss*);
         *(.data);
         *(.rodata*);
         *(COMMON);
+        *(.bss);
+        *(.bss*);
         *(.eh_frame);
         _data_end = .;
-    }
-    
+    } 
+	
     _core_size = _data_end - _text;
     _core_size_sectors = (_core_size / 512) + 1;
     _core_size_int = (_core_size / 4) + 1;
@@ -53,11 +53,11 @@ SECTIONS
     
     . = ALIGN(0x200);
     
-    . -= 1;
+    . = . - 1;
     .align :
     {
         BYTE(0x0); 
-    }
+    } 
     
     /DISCARD/ :
     {
@@ -67,5 +67,7 @@ SECTIONS
         *(.rel*);
         *(.comment);
         *(.debug*);
+		*(.interp);
+		*(.eh_frame_hdr);
     }
 }

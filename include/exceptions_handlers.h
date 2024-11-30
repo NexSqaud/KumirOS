@@ -31,6 +31,7 @@ void NORETURN x(Registers regs)     \
 }                                   \
 
 DEFINE_DEFAULT_HANDLER(generalProtectionFault)
+DEFINE_DEFAULT_HANDLER(invalidTss)
 DEFINE_DEFAULT_HANDLER(divisionError)
 DEFINE_DEFAULT_HANDLER(doubleFault)
 DEFINE_DEFAULT_HANDLER(segmentNotPresent)

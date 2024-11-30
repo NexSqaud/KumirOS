@@ -13,7 +13,7 @@ size_t wideStringLength(const wchar_t* str)
 
 int32_t wideStringFind(const wchar_t* source, const wchar_t* pattern, size_t startIndex)
 {
-    if(source == NULL || pattern == NULL) return;
+    if(source == NULL || pattern == NULL) return -1;
 
     size_t patternLength = wideStringLength(pattern);
     size_t sourceLength = wideStringLength(source);

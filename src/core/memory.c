@@ -88,12 +88,12 @@ void memoryInit(void)
 void* malloc(size_t size)
 {
     //DEBUG_PRINTF("Allocationg block of %d bytes", size);
-
+	
     AllocNode* node = (AllocNode*)heapStart;
     AllocNode* previous = NULL;
     while ((uint8_t*)node != heapEnd && (uint8_t*)node != heapFarestAlloc)
     {
-        if(node == previous)
+		if(node == previous)
         {
             DEBUG_PRINT("Block find infinity loop detected!");
         }
@@ -107,11 +107,12 @@ void* malloc(size_t size)
         {
             break;
         }
+		
         previous = node;
         node = (AllocNode*)((uint8_t*)node + node->size + sizeof(AllocNode));
     }
 
-    if (node->size > size + sizeof(AllocNode))
+    if (node->magic == Free && node->size > size + sizeof(AllocNode))
     {
         AllocNode* spliter = (AllocNode*)((uint8_t*)node + size + sizeof(AllocNode));
         spliter->magic = Free;

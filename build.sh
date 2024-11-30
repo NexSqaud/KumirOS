@@ -29,3 +29,7 @@ if [ $? -eq 0 ]; then
     clear
     ./build/nobuild.o $1
 fi
+
+if [ -d "build/debug" ]; then
+	nm build/debug/kumiros.elf | grep " [Tt] " | awk '{ print $1" "$3 }' > build/debug/kumiros.bochs.dbg
+fi

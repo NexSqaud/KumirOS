@@ -9,7 +9,7 @@ uint32_t clockTicks = 0;
 
 volatile rtcClockHandler clockHandler = NULL;
 
-volatile void clockInterruptHandler(Registers regs)
+void clockInterruptHandler(Registers regs)
 {
     (void)regs;
     clockTicks++;

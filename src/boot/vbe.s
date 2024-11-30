@@ -57,7 +57,7 @@ set_video_mode:
     movw $0, %ax
     movw %ax, %fs
     
-    cmp $0xFFFF, .mode(,1)
+    cmpw $0xFFFF, .mode(,1)
     jne .skip
     movw $0x4315, .mode(,1)
 .skip: 

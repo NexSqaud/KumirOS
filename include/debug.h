@@ -8,7 +8,7 @@
     debugPrintFormated("[%cs:%d] %cs\n", __FILE__, __LINE__, x);
 
 #define DEBUG_PRINTF(format, ...) \
-    debugPrintFormated("[%cs:%d] " format "\n", __FILE__, __LINE__, __VA_ARGS__)
+    debugPrintFormated("["__FILE__":"stringify(__LINE__)"] " format "\n", __VA_ARGS__)
 
 #define PRINT_REGISTER(x) \
     printString(stringify(x) ": "); \

@@ -5,7 +5,7 @@
 
 #define SET_DEFAULT_HANDLER(index) \
     setInterruptGate(index, (uint32_t)int ## index, 0x08, 0x8E)
-
+/*
 #define DEFAULT_INTERRUPT_HANDLER(index) \
 void __attribute__((naked)) int ## index (void)     \
 {                                                   \
@@ -18,6 +18,20 @@ void __attribute__((naked)) int ## index (void)     \
     __asm__ volatile("sti");                        \
     __asm__ volatile("iret");                       \
 }                                                   \
+
+*/
+
+#define DEFAULT_INTERRUPT_HANDLER(index) \
+void __attribute__((interrupt, optnone)) int ## index (InterruptFrame* frame) 	\
+{																		\
+	__asm__ volatile("cli");											\
+	__asm__ volatile("pushal");											\
+	handleInterrupt(index, *(Registers*)((void*)(&frame) + 1));			\
+	__asm__ volatile ("popal");											\
+}																		\
+
+__attribute__((no_caller_saved_registers))
+void handleInterrupt(int index, Registers regs);
 
 DEFAULT_INTERRUPT_HANDLER(0)
 DEFAULT_INTERRUPT_HANDLER(1)
@@ -76,8 +90,6 @@ static InterruptHandler handlers[256];
 __attribute__((aligned(0x10)))
 static IdtEntry entries[256];
 static IdtPtr idtPtr;
-
-void handleInterrupt(int index, Registers regs);
 
 void setInterruptGate(uint8_t index, uint32_t handler, uint16_t selector, uint16_t flags)
 {
@@ -185,6 +197,7 @@ void interruptRemoveHandler(uint8_t index)
     handlers[index] = NULL;
 }
 
+__attribute__((no_caller_saved_registers))
 void handleInterrupt(int index, Registers regs)
 {
     if (handlers[index])

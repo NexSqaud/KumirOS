@@ -20,6 +20,15 @@ typedef struct
     uint32_t errorCode;
 } __attribute__((packed)) Registers;
 
+typedef struct
+{
+	uint16_t ip;
+	uint16_t cs;
+	uint16_t flags;
+	uint16_t sp;
+	uint16_t ss;
+} InterruptFrame;
+
 typedef struct {
     uint16_t handlerLow;
     uint16_t selector;
